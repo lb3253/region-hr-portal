@@ -11,6 +11,7 @@ import Notifications from './pages/Notifications'
 import Profile from './pages/Profile'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import Companies from './pages/admin/Companies'
+import Categories from './pages/admin/Categories'
 import Users from './pages/admin/Users'
 import Upload from './pages/admin/Upload'
 import DocumentManager from './pages/admin/DocumentManager'
@@ -35,6 +36,7 @@ export default function App() {
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/companies" element={<Companies />} />
                     <Route path="/admin/users" element={<Users />} />
+                    <Route path="/admin/categories" element={<Categories />} />
                     <Route path="/admin/upload" element={<Upload />} />
                     <Route path="/admin/documents" element={<DocumentManager />} />
                   </Route>

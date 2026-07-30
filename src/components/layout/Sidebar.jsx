@@ -14,6 +14,7 @@ const ADMIN_LINKS = [
   { to: '/admin', label: 'Admin Dashboard', icon: 'home', end: true },
   { to: '/admin/companies', label: 'Companies', icon: 'building' },
   { to: '/admin/users', label: 'Users', icon: 'users' },
+  { to: '/admin/categories', label: 'Categories', icon: 'check-square' },
   { to: '/admin/upload', label: 'Upload Documents', icon: 'upload' },
   { to: '/admin/documents', label: 'All Documents', icon: 'folder' },
 ]

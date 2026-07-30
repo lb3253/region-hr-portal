@@ -1,6 +1,19 @@
 import { supabase } from './supabase'
 
 /**
+ * supabase-js raises FunctionsFetchError ("Failed to send a request to the Edge
+ * Function") whenever the fetch itself fails, which covers a function that was
+ * never deployed, a name mismatch, and a preflight blocked by the platform's
+ * JWT check alike.
+ */
+function isUnreachable(error) {
+  return (
+    error?.name === 'FunctionsFetchError' ||
+    /failed to (send|fetch)/i.test(error?.message || '')
+  )
+}
+
+/**
  * Creating a user requires Supabase's service-role key, which grants full
  * unrestricted access to the database. This portal is a static site — anything
  * it holds ships to the browser — so the key lives only in the
@@ -28,7 +41,21 @@ export async function createPortalUser({ email, password, fullName, role, compan
     } catch {
       detail = ''
     }
-    throw new Error(detail || error.message || 'Could not create the user.')
+    if (detail) throw new Error(detail)
+
+    // No body at all means the browser never got a usable response — the
+    // function is missing, misnamed, or its CORS preflight was rejected before
+    // it ran. supabase-js reports all of those as the same opaque message, so
+    // point at the things worth checking instead of repeating it.
+    if (isUnreachable(error)) {
+      throw new Error(
+        'Could not reach the admin-create-user function. Check that it is deployed ' +
+          'under exactly that name and that its "Verify JWT" setting is turned off ' +
+          '(the function checks the caller itself), then try again.'
+      )
+    }
+
+    throw new Error(error.message || 'Could not create the user.')
   }
 
   if (data?.error) throw new Error(data.error)
